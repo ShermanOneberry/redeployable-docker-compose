@@ -1,0 +1,43 @@
+version: '3'
+
+networks:
+  my_network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      my_network:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: always
+  jenkins:
+    image: jenkins/jenkins:lts-jdk11
+    container_name: jenkins
+    environment:
+      JENKINS_OPTS: "--prefix=/jenkins"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      my_network:
+        ipv4_address: 172.20.0.3
+    restart: always
+  registry:
+    image: registry:2
+    container_name: registry
+    networks:
+      my_network:
+        ipv4_address: 172.20.0.3
+    volumes:
+      - registry_data:/var/lib/registry
+volumes:
+  jenkins_home:
+  registry_data:
