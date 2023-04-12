@@ -1,7 +1,0 @@
-# Working Jenkins pipeline script:
-node {
-    docker.withRegistry('http://registry:5000') {
-        git url: 'https://github.com/docker/getting-started.git', branch: 'master'
-        docker.build('myapp').push('latest')
-    }
-}
